@@ -4,6 +4,7 @@ import "../css/euclid-circular-a-font.css";
 import "../css/style.css";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import ChatWidget from "@/components/Chat";
 
 import { ModalProvider } from "../context/QuickViewModalContext";
 import { CartModalProvider } from "../context/CartSidebarModalContext";
@@ -39,8 +40,10 @@ export default function RootLayout({
                 <ModalProvider>
                   <PreviewSliderProvider>
                     <Header />
-                    {children}
-
+                    <main className="pt-[120px] md:pt-[120px] lg:pt-[100px] min-h-screen">
+                      {children}
+                    </main>{" "}
+                    <ChatWidget />
                     <QuickViewModal />
                     <CartSidebarModal />
                     <PreviewSliderModal />
