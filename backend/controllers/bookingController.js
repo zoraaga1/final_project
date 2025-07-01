@@ -25,13 +25,17 @@ exports.createBooking = async (req, res) => {
 // 2. Get Bookings for Logged-In Expert
 exports.getExpertBookings = async (req, res) => {
   try {
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ message: "Unauthorized: User not found in request" });
+    }
+
     const expertId = req.user._id;
 
     const bookings = await Booking.find({ expertId }).populate("productId");
 
     res.status(200).json(bookings);
   } catch (err) {
-    res.status(500).json({ message: "Error fetching bookings" });
+    res.status(500).json({ message: "Error fetching bookings", error: err.message });
   }
 };
 
