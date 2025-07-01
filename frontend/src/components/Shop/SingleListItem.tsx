@@ -154,7 +154,7 @@ const SingleListItem = ({ item }: { item: Product }) => {
               />
             </div>
 
-            <p className="text-custom-sm">({item.reviews})</p>
+            <p className="text-custom-sm">({item.createdBy.rating})</p>
           </div>
         </div>
       </div>

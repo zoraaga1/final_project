@@ -5,3 +5,4 @@ node_modules/side-channel-list/.editorconfig
 .env
 frontend/package-lock.json
 testing
+.vscode

@@ -2,7 +2,7 @@
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import api from "@/api";
 
 const Signin = () => {
@@ -16,16 +16,23 @@ const Signin = () => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-  
+
     try {
       const { data } = await api.post("/users/login", { email, password });
-  
-      localStorage.setItem("token", data.token);
-      alert("Sign in successfully");
 
-      // router.push("/dashboard");
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userRole", data.user.role);
+      // Redirect based on role
+      window.location.href = 
+      data.user.role === "seller" 
+        ? "/seller/dashboard" 
+        : data.user.role === "expert" 
+          ? "/experts" 
+          : "/";
     } catch (error: any) {
-      setError(error.response?.data?.message || "Login failed. Please try again.");
+      setError(
+        error.response?.data?.message || "Login failed. Please try again."
+      );
       console.error("Login error:", error);
     } finally {
       setIsLoading(false);
@@ -148,7 +155,6 @@ const Signin = () => {
                     </svg>
                     Sign In with Google
                   </button>
-
                 </div>
 
                 <p className="text-center mt-6">

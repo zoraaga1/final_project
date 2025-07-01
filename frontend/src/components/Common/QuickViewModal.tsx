@@ -41,6 +41,14 @@ const QuickViewModal = () => {
     closeModal();
   };
 
+  //booking expert
+  const handleBookExpert = () => {
+    // You can route to a booking page or open another modal
+    console.log("Booking expert for product:", product.title);
+    // Example with Next.js router:
+    // router.push(`/book-expert?productId=${product._id}`);
+  };
+
   useEffect(() => {
     // closing modal while clicking outside
     function handleClickOutside(event) {
@@ -155,7 +163,7 @@ const QuickViewModal = () => {
               <h3 className="font-semibold text-xl xl:text-heading-5 text-dark mb-4">
                 {product.title}
               </h3>
-                      <span>Seller rating</span>
+              <span>Seller rating</span>
               <div className="flex flex-wrap items-center gap-5 mb-6">
                 <div className="flex items-center gap-1.5">
                   {/* <!-- stars --> */}
@@ -416,6 +424,12 @@ const QuickViewModal = () => {
                   Add to Wishlist
                 </button>
               </div>
+              <button
+                className="mt-8 bg-green-600 hover:bg-green-700 text-white px-7 py-3 rounded shadow-md font-medium transition"
+                onClick={handleBookExpert}
+              >
+                Book Expert
+              </button>
             </div>
           </div>
         </div>
