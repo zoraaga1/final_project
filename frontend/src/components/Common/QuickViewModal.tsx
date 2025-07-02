@@ -9,8 +9,16 @@ import Image from "next/image";
 import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
 import { resetQuickView } from "@/redux/features/quickView-slice";
 import { updateproductDetails } from "@/redux/features/product-details";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store"; 
+import { useRouter } from "next/navigation";
+import api from "@/api";
 
 const QuickViewModal = () => {
+  const user = useAppSelector((state) => state.auth.user);
+    const wishlistItems = useAppSelector((state) => state.wishlistReducer.items);
+  
+  const router = useRouter();
   const { isModalOpen, closeModal } = useModalContext();
   const { openPreviewModal } = usePreviewSlider();
   const [quantity, setQuantity] = useState(1);
@@ -42,11 +50,32 @@ const QuickViewModal = () => {
   };
 
   //booking expert
-  const handleBookExpert = () => {
-    // You can route to a booking page or open another modal
-    console.log("Booking expert for product:", product.title);
-    // Example with Next.js router:
-    // router.push(`/book-expert?productId=${product._id}`);
+  const handleBookExpert = async () => {
+    console.log("Logged-in user from Redux:", user);
+
+    // if (!user) {
+    //   router.push("/signin"); // or show login prompt
+    //   return;
+    // }
+
+    try {
+      const bookingPayload = {
+        productId: product._id, // pass current product id here
+        expertId: null, // no expert assigned yet
+        buyer: {
+          name: user.name,
+          whatsapp: user.whatsapp || "",
+        },
+        totalPrice: product.price, 
+      };
+
+      const response = await api.post("/bookings", bookingPayload);
+      alert("Booking request sent!");
+      console.log("Booking created:", response.data.booking);
+    } catch (error) {
+      console.error("Failed to create booking", error);
+      alert("Error creating booking");
+    }
   };
 
   useEffect(() => {

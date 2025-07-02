@@ -45,13 +45,20 @@ exports.acceptBooking = async (req, res) => {
     const bookingId = req.params.id;
     const expertId = req.user._id;
 
-    const booking = await Booking.findOne({ _id: bookingId, expertId });
+    // Find booking by ID (without filtering expertId)
+    const booking = await Booking.findById(bookingId);
 
     if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
     }
 
+    // If already assigned to an expert, reject
+    if (booking.expertId) {
+      return res.status(400).json({ message: "Booking already assigned to an expert" });
+    }
+
     booking.status = "accepted";
+    booking.expertId = expertId;  // assign current expert
     await booking.save();
 
     res.status(200).json({
@@ -59,6 +66,7 @@ exports.acceptBooking = async (req, res) => {
       whatsapp: booking.buyer.whatsapp,
     });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Error accepting booking" });
   }
 };

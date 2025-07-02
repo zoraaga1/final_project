@@ -1,9 +1,11 @@
 "use client";
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import api from "@/api";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "@/redux/features/authSlice";
+import { useRouter } from "next/navigation";
 
 const Signin = () => {
   const router = useRouter();
@@ -11,6 +13,8 @@ const Signin = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,12 +26,17 @@ const Signin = () => {
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("userRole", data.user.role);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      dispatch(setCredentials({ user: data.user, token: data.token }));
+      console.log("User state", data.user);
+
       // Redirect based on role
-      window.location.href = 
-      data.user.role === "seller" 
-        ? "/seller/dashboard" 
-        : data.user.role === "expert" 
-          ? "/experts" 
+
+      window.location.href =
+        data.user.role === "seller"
+          ? "/seller/dashboard"
+          : data.user.role === "expert"
+          ? "/experts"
           : "/";
     } catch (error: any) {
       setError(
