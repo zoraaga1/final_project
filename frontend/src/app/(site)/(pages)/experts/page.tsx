@@ -28,7 +28,7 @@ const ExpertBookingsPage = () => {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const response = await api.get("/bookings/expert/bookings");
+        const response = await api.get("/bookings/pending");
         console.log("API response data:", response.data);
     
         if (!Array.isArray(response.data)) {
@@ -47,7 +47,6 @@ const ExpertBookingsPage = () => {
     fetchBookings();
   }, [user]);
 
-  // Optional: log bookings whenever they update
   useEffect(() => {
     console.log("Bookings updated:", bookings);
   }, [bookings]);

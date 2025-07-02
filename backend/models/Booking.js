@@ -9,11 +9,11 @@ const BookingSchema = new mongoose.Schema({
   expertId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true,
   },
   buyer: {
     name: { type: String, required: true },
     whatsapp: { type: String, required: true },
+    email: { type: String},
   },
   status: {
     type: String,

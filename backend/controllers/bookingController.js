@@ -3,11 +3,11 @@ const Booking = require('../models/Booking');
 // 1. Create Booking
 exports.createBooking = async (req, res) => {
   try {
-    const { productId, expertId, buyer, totalPrice } = req.body;
+    const { productId, buyer, totalPrice } = req.body;
 
     const booking = new Booking({
       productId,
-      expertId,
+      expertId: undefined,
       buyer,
       totalPrice: totalPrice || 0,
       status: "pending",
@@ -68,6 +68,18 @@ exports.acceptBooking = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Error accepting booking" });
+  }
+};
+
+// 4. Get All Pending Bookings
+exports.getPendingBookings = async (req, res) => {
+  try {
+    const pendingBookings = await Booking.find({ status: "pending" }).populate("productId");
+
+    res.status(200).json(pendingBookings);
+  } catch (err) {
+    console.error("Error fetching pending bookings:", err);
+    res.status(500).json({ message: "Error fetching pending bookings" });
   }
 };
 
