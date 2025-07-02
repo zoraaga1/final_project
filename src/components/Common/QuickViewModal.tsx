@@ -1,5 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { RootState } from "@/redux/store"; 
+import { useRouter } from "next/navigation";
 
 import { useModalContext } from "@/app/context/QuickViewModalContext";
 import { AppDispatch, useAppSelector } from "@/redux/store";
@@ -9,17 +12,24 @@ import Image from "next/image";
 import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
 import { resetQuickView } from "@/redux/features/quickView-slice";
 import { updateproductDetails } from "@/redux/features/product-details";
+import { useSelector } from "react-redux";
+import api from "@/api";
 
 const QuickViewModal = () => {
+  const user = useAppSelector((state) => state.auth.user);
+  const wishlistItems = useAppSelector((state) => state.wishlistReducer.items);
+  
+  const router = useRouter();
   const { isModalOpen, closeModal } = useModalContext();
   const { openPreviewModal } = usePreviewSlider();
   const [quantity, setQuantity] = useState(1);
+  
 
   const dispatch = useDispatch<AppDispatch>();
 
   // get the product data
   const product = useAppSelector((state) => state.quickViewReducer.value);
-
+  console.log("product test", product);
   const [activePreview, setActivePreview] = useState(0);
 
   // preview modal
@@ -41,6 +51,43 @@ const QuickViewModal = () => {
     closeModal();
   };
 
+  //booking expert
+  const handleBookExpert = async () => {
+    const token = localStorage.getItem("token");
+  
+    if (!token) {
+      alert("You need to be signed in to book an expert.");
+      return;
+    }
+  
+    try {
+      const response = await api.post(
+        "/bookings",
+        {
+          productId: product._id,
+          buyer: {
+            name: product.createdBy.name,
+            whatsapp: "0000000000",
+            email: product.createdBy.email,
+          },
+          totalPrice: product.price,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("email", response.data.booking.buyer.email);
+      console.log("Booking successful:", response.data.booking);
+      // alert("Booking submitted! Waiting for expert acceptance.");
+    } catch (err) {
+      console.error("Booking error:", err.response?.data || err.message);
+      alert("Failed to book expert. Try again.");
+    }
+  };
+  
+  
   useEffect(() => {
     // closing modal while clicking outside
     function handleClickOutside(event) {
@@ -94,7 +141,7 @@ const QuickViewModal = () => {
             <div className="max-w-[526px] w-full">
               <div className="flex gap-5">
                 <div className="flex flex-col gap-5">
-                  {product.imgs.thumbnails?.map((img, key) => (
+                  {product.imgs.map((img, key) => (
                     <button
                       onClick={() => setActivePreview(key)}
                       key={key}
@@ -138,7 +185,10 @@ const QuickViewModal = () => {
                     </button>
 
                     <Image
-                      src={product?.imgs?.previews?.[activePreview] || "/images/placeholder.png"}
+                      src={
+                        product?.imgs[activePreview] ||
+                        "/images/placeholder.png"
+                      }
                       alt="products-details"
                       width={400}
                       height={400}
@@ -149,14 +199,10 @@ const QuickViewModal = () => {
             </div>
 
             <div className="max-w-[445px] w-full">
-              <span className="inline-block text-custom-xs font-medium text-white py-1 px-3 bg-green mb-6.5">
-                SALE 20% OFF
-              </span>
-
               <h3 className="font-semibold text-xl xl:text-heading-5 text-dark mb-4">
                 {product.title}
               </h3>
-
+              <span>Seller rating</span>
               <div className="flex flex-wrap items-center gap-5 mb-6">
                 <div className="flex items-center gap-1.5">
                   {/* <!-- stars --> */}
@@ -266,9 +312,11 @@ const QuickViewModal = () => {
                       </defs>
                     </svg>
                   </div>
-
                   <span>
-                    <span className="font-medium text-dark"> 4.7 Rating </span>
+                    <span className="font-medium text-dark">
+                      {" "}
+                      {product.createdBy.rating} Rating{" "}
+                    </span>
                     <span className="text-dark-2"> (5 reviews) </span>
                   </span>
                 </div>
@@ -302,10 +350,7 @@ const QuickViewModal = () => {
                 </div>
               </div>
 
-              <p>
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has.
-              </p>
+              <p>{product.description}</p>
 
               <div className="flex flex-wrap justify-between gap-5 mt-6 mb-7.5">
                 <div>
@@ -315,9 +360,6 @@ const QuickViewModal = () => {
 
                   <span className="flex items-center gap-2">
                     <span className="font-semibold text-dark text-xl xl:text-heading-4">
-                      ${product.discountedPrice}
-                    </span>
-                    <span className="font-medium text-dark-4 text-lg xl:text-2xl line-through">
                       ${product.price}
                     </span>
                   </span>
@@ -421,6 +463,12 @@ const QuickViewModal = () => {
                   Add to Wishlist
                 </button>
               </div>
+              <button
+                className="mt-8 bg-green-600 hover:bg-green-700 text-white px-7 py-3 rounded shadow-md font-medium transition"
+                onClick={handleBookExpert}
+              >
+                Book Expert
+              </button>
             </div>
           </div>
         </div>

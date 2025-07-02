@@ -49,9 +49,9 @@ const SingleItem = ({ item }) => {
         </div>
       </div>
 
-      <div className="min-w-[180px]">
-        <p className="text-dark">${item.discountedPrice}</p>
-      </div>
+      {/* <div className="min-w-[180px]">
+        <p className="text-dark">${item.price}</p>
+      </div> */}
 
       <div className="min-w-[275px]">
         <div className="w-max flex items-center rounded-md border border-gray-3">
@@ -105,9 +105,9 @@ const SingleItem = ({ item }) => {
         </div>
       </div>
 
-      <div className="min-w-[200px]">
+      {/* <div className="min-w-[200px]">
         <p className="text-dark">${item.discountedPrice * quantity}</p>
-      </div>
+      </div> */}
 
       <div className="min-w-[50px] flex justify-end">
         <button

@@ -28,17 +28,7 @@ const data = [
     title: "Health & Sports",
     id: 6,
     img: "/images/categories/categories-06.png",
-  },
-  {
-    title: "Watches",
-    id: 7,
-    img: "/images/categories/categories-07.png",
-  },
-  {
-    title: "Televisions",
-    id: 8,
-    img: "/images/categories/categories-04.png",
-  },
+  }
 ];
 
 export default data;

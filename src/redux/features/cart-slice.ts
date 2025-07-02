@@ -6,15 +6,12 @@ type InitialState = {
 };
 
 type CartItem = {
-  id: number;
+  _id: string;  // Changed from number to string to match MongoDB
   title: string;
   price: number;
-  discountedPrice: number;
+  discountedPrice?: number;
   quantity: number;
-  imgs?: {
-    thumbnails: string[];
-    previews: string[];
-  };
+  imgs?: string[]; // Changed to match your Product type
 };
 
 const initialState: InitialState = {
@@ -26,15 +23,14 @@ export const cart = createSlice({
   initialState,
   reducers: {
     addItemToCart: (state, action: PayloadAction<CartItem>) => {
-      const { id, title, price, quantity, discountedPrice, imgs } =
-        action.payload;
-      const existingItem = state.items.find((item) => item.id === id);
+      const { _id, title, price, quantity, discountedPrice, imgs } = action.payload;
+      const existingItem = state.items.find((item) => item._id === _id);
 
       if (existingItem) {
         existingItem.quantity += quantity;
       } else {
         state.items.push({
-          id,
+          _id,
           title,
           price,
           quantity,
@@ -43,28 +39,26 @@ export const cart = createSlice({
         });
       }
     },
-    removeItemFromCart: (state, action: PayloadAction<number>) => {
+    removeItemFromCart: (state, action: PayloadAction<string>) => { // Changed to string
       const itemId = action.payload;
-      state.items = state.items.filter((item) => item.id !== itemId);
+      state.items = state.items.filter((item) => item._id !== itemId);
     },
     updateCartItemQuantity: (
       state,
-      action: PayloadAction<{ id: number; quantity: number }>
+      action: PayloadAction<{ _id: string; quantity: number }> // Changed to _id
     ) => {
-      const { id, quantity } = action.payload;
-      const existingItem = state.items.find((item) => item.id === id);
+      const { _id, quantity } = action.payload;
+      const existingItem = state.items.find((item) => item._id === _id);
 
       if (existingItem) {
         existingItem.quantity = quantity;
       }
     },
-
     removeAllItemsFromCart: (state) => {
       state.items = [];
     },
   },
 });
-
 export const selectCartItems = (state: RootState) => state.cartReducer.items;
 
 export const selectTotalPrice = createSelector([selectCartItems], (items) => {

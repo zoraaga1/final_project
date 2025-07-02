@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 
+import colors, { violet } from "tailwindcss/colors";
 const defaultTheme = require("tailwindcss/defaultTheme");
 
 const config: Config = {
@@ -51,6 +52,7 @@ const config: Config = {
         7: "#374151",
       },
       blue: {
+        ...colors.blue,
         DEFAULT: "#3C50E0",
         dark: "#1C3FB7",
         light: "#5475E5",
@@ -60,6 +62,7 @@ const config: Config = {
         "light-5": "#E1E8FF",
       },
       red: {
+        ...colors.red,
         DEFAULT: "#F23030",
         dark: "#E10E0E",
         light: "#F56060",
@@ -70,6 +73,7 @@ const config: Config = {
         "light-6": "#FEF3F3",
       },
       green: {
+        ...colors.green,
         DEFAULT: "#22AD5C",
         dark: "#1A8245",
         light: "#2CD673",
