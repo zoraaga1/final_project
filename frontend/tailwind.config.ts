@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss";
 
-import colors from "tailwindcss/colors";
+import colors, { violet } from "tailwindcss/colors";
 const defaultTheme = require("tailwindcss/defaultTheme");
 
 const config: Config = {

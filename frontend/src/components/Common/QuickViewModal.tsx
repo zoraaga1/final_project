@@ -1,5 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { RootState } from "@/redux/store"; 
+import { useRouter } from "next/navigation";
 
 import { useModalContext } from "@/app/context/QuickViewModalContext";
 import { AppDispatch, useAppSelector } from "@/redux/store";
@@ -9,11 +12,18 @@ import Image from "next/image";
 import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
 import { resetQuickView } from "@/redux/features/quickView-slice";
 import { updateproductDetails } from "@/redux/features/product-details";
+import { useSelector } from "react-redux";
+import api from "@/api";
 
 const QuickViewModal = () => {
+  const user = useAppSelector((state) => state.auth.user);
+  const wishlistItems = useAppSelector((state) => state.wishlistReducer.items);
+  
+  const router = useRouter();
   const { isModalOpen, closeModal } = useModalContext();
   const { openPreviewModal } = usePreviewSlider();
   const [quantity, setQuantity] = useState(1);
+  
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -41,6 +51,43 @@ const QuickViewModal = () => {
     closeModal();
   };
 
+  //booking expert
+  const handleBookExpert = async () => {
+    const token = localStorage.getItem("token");
+  
+    if (!token) {
+      alert("You need to be signed in to book an expert.");
+      return;
+    }
+  
+    try {
+      const response = await api.post(
+        "/bookings",
+        {
+          productId: product._id,
+          buyer: {
+            name: product.createdBy.name,
+            whatsapp: "0000000000",
+            email: product.createdBy.email,
+          },
+          totalPrice: product.price,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("email", response.data.booking.buyer.email);
+      console.log("Booking successful:", response.data.booking);
+      // alert("Booking submitted! Waiting for expert acceptance.");
+    } catch (err) {
+      console.error("Booking error:", err.response?.data || err.message);
+      alert("Failed to book expert. Try again.");
+    }
+  };
+  
+  
   useEffect(() => {
     // closing modal while clicking outside
     function handleClickOutside(event) {
@@ -155,7 +202,7 @@ const QuickViewModal = () => {
               <h3 className="font-semibold text-xl xl:text-heading-5 text-dark mb-4">
                 {product.title}
               </h3>
-                      <span>Seller rating</span>
+              <span>Seller rating</span>
               <div className="flex flex-wrap items-center gap-5 mb-6">
                 <div className="flex items-center gap-1.5">
                   {/* <!-- stars --> */}
@@ -416,6 +463,12 @@ const QuickViewModal = () => {
                   Add to Wishlist
                 </button>
               </div>
+              <button
+                className="mt-8 bg-green-600 hover:bg-green-700 text-white px-7 py-3 rounded shadow-md font-medium transition"
+                onClick={handleBookExpert}
+              >
+                Book Expert
+              </button>
             </div>
           </div>
         </div>
