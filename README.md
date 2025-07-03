@@ -1,8 +1,8 @@
 # final_project
 
-# 🛒 HamzaStore
+# 🛒 Hmizate Store
 
-HamzaStore is a full-stack MERN (MongoDB, Express.js, React.js, Node.js) web platform that allows users to buy and sell used products — including cars, phones, PCs, and washing machines. What sets HamzaStore apart is its expert verification service: buyers can request certified experts to inspect a product before purchasing, helping build trust in second-hand transactions.
+Hmizate Store is a full-stack MERN (MongoDB, Express.js, React.js, Node.js) web platform that allows users to buy and sell used products — including cars, phones, PCs, and washing machines. What sets Hmizate Store apart is its expert verification service: buyers can request certified experts to inspect a product before purchasing, helping build trust in second-hand transactions.
 
 ---
 

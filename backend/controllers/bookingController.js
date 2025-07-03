@@ -31,8 +31,16 @@ exports.getExpertBookings = async (req, res) => {
 
     const expertId = req.user._id;
 
-    const bookings = await Booking.find({ expertId }).populate("productId");
-
+    const bookings = await Booking.find({ expertId })
+      .populate({
+        path: 'productId',
+        populate: {
+          path: "createdBy",
+          model: "User"
+        }
+      })
+      .populate('buyer');
+      console.log("Populated bookings:", JSON.stringify(bookings[0], null, 2)); // Log first booking
     res.status(200).json(bookings);
   } catch (err) {
     res.status(500).json({ message: "Error fetching bookings", error: err.message });
@@ -74,7 +82,15 @@ exports.acceptBooking = async (req, res) => {
 // 4. Get All Pending Bookings
 exports.getPendingBookings = async (req, res) => {
   try {
-    const pendingBookings = await Booking.find({ status: "pending" }).populate("productId");
+    const pendingBookings = await Booking.find({ status: "pending" })
+      .populate({
+        path: 'productId',
+        populate: {
+          path: 'createdBy',
+          model: 'User'
+        }
+      })
+      .populate('buyer');
 
     res.status(200).json(pendingBookings);
   } catch (err) {
@@ -84,9 +100,8 @@ exports.getPendingBookings = async (req, res) => {
 };
 
 const requireExpert = (req, res, next) => {
-    if (req.user.role !== 'expert') {
-      return res.status(403).json({ message: "Access denied" });
-    }
-    next();
-  };
-  
+  if (req.user.role !== 'expert') {
+    return res.status(403).json({ message: "Access denied" });
+  }
+  next();
+};
