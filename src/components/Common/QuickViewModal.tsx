@@ -16,7 +16,8 @@ import { useSelector } from "react-redux";
 import api from "@/api";
 
 const QuickViewModal = () => {
-  const user = useAppSelector((state) => state.auth.user);
+  const userString = localStorage.getItem("user");
+const user = userString ? JSON.parse(userString) : null;
   const wishlistItems = useAppSelector((state) => state.wishlistReducer.items);
   
   const router = useRouter();
@@ -27,6 +28,8 @@ const QuickViewModal = () => {
 
   const dispatch = useDispatch<AppDispatch>();
 
+ 
+  console.log("user", user);
   // get the product data
   const product = useAppSelector((state) => state.quickViewReducer.value);
   console.log("product test", product);
@@ -66,9 +69,9 @@ const QuickViewModal = () => {
         {
           productId: product._id,
           buyer: {
-            name: product.createdBy.name,
+            name: user.name,
             whatsapp: "0000000000",
-            email: product.createdBy.email,
+            email: user.email,
           },
           totalPrice: product.price,
         },
